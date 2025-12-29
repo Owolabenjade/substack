@@ -36,8 +36,6 @@
 (define-map user-subscriptions principal (list 50 uint))
 (define-map plan-subscribers uint (list 1000 principal))
 
-(define-data-var vault-contract (optional principal) none)
-(define-data-var plans-contract (optional principal) none)
 (define-data-var total-charges-processed uint u0)
 (define-data-var total-volume-processed uint u0)
 
@@ -177,19 +175,13 @@
           (var-set total-charges-processed (+ (var-get total-charges-processed) u1))
           (var-set total-volume-processed (+ (var-get total-volume-processed) amount))
           
-          (let (
-            (keeper-fee (if (is-eq tx-sender subscriber)
-                          u0
-                          (/ (* amount KEEPER-FEE-BPS) u10000)))
-          )
-            (ok {
-              subscriber: subscriber,
-              plan-id: plan-id,
-              amount: amount,
-              merchant: merchant,
-              next-charge-block: (+ stacks-block-height interval)
-            })
-          )
+          (ok {
+            subscriber: subscriber,
+            plan-id: plan-id,
+            amount: amount,
+            merchant: merchant,
+            next-charge-block: (+ stacks-block-height interval)
+          })
         )
       )
     )
@@ -202,26 +194,6 @@
 
 (define-private (execute-single-charge (charge { subscriber: principal, plan-id: uint }))
   (execute-charge (get subscriber charge) (get plan-id charge))
-)
-
-;; ============================================
-;; ADMIN FUNCTIONS
-;; ============================================
-
-(define-public (set-vault-contract (vault principal))
-  (begin
-    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
-    (var-set vault-contract (some vault))
-    (ok true)
-  )
-)
-
-(define-public (set-plans-contract (plans principal))
-  (begin
-    (asserts! (is-eq tx-sender CONTRACT-OWNER) ERR-NOT-AUTHORIZED)
-    (var-set plans-contract (some plans))
-    (ok true)
-  )
 )
 
 ;; ============================================
@@ -278,23 +250,6 @@
 
 (define-read-only (get-total-volume)
   (var-get total-volume-processed)
-)
-
-(define-read-only (get-subscription-details (subscriber principal) (plan-id uint))
-  (match (map-get? subscriptions { subscriber: subscriber, plan-id: plan-id })
-    sub 
-      (match (contract-call? .subscription-plans get-plan plan-id)
-        plan 
-          (some {
-            subscription: sub,
-            plan: plan,
-            next-charge-block: (+ (get last-charged-block sub) (get plan-interval sub)),
-            is-charge-due: (>= stacks-block-height (+ (get last-charged-block sub) (get plan-interval sub)))
-          })
-        none
-      )
-    none
-  )
 )
 
 (define-read-only (get-keeper-fee-rate)

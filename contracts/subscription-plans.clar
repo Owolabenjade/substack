@@ -11,7 +11,6 @@
 (define-constant ERR-INVALID-INTERVAL (err u203))
 (define-constant ERR-PLAN-INACTIVE (err u204))
 (define-constant ERR-NOT-PLAN-OWNER (err u205))
-(define-constant ERR-PLAN-ALREADY-EXISTS (err u206))
 
 (define-constant MIN-INTERVAL u6)
 (define-constant MAX-INTERVAL u52560)
@@ -233,18 +232,5 @@
   (match (map-get? plans plan-id)
     plan (get subscriber-count plan)
     u0
-  )
-)
-
-(define-read-only (get-monthly-cost (plan-id uint))
-  (match (map-get? plans plan-id)
-    plan 
-      (let (
-        (blocks-per-month u4320)
-        (charges-per-month (/ blocks-per-month (get interval-blocks plan)))
-      )
-        (some (* (get amount plan) charges-per-month))
-      )
-    none
   )
 )

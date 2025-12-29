@@ -13,4 +13,5 @@ costs-reports.json
 node_modules
 backend/.env
 .env
-backend/.env
+*.env
+node_modules/

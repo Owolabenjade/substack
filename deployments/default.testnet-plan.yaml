@@ -1,0 +1,32 @@
+---
+id: 0
+name: Testnet deployment
+network: testnet
+stacks-node: "https://api.testnet.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: subscription-plans
+            expected-sender: ST1XWA7MJQ336S4910WZS1WVHJ5R4GS78FK58PHF6
+            cost: 123636475
+            path: "contracts\\subscription-plans.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: subscription-vault
+            expected-sender: ST1XWA7MJQ336S4910WZS1WVHJ5R4GS78FK58PHF6
+            cost: 123769776
+            path: "contracts\\subscription-vault.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: subscription-engine
+            expected-sender: ST1XWA7MJQ336S4910WZS1WVHJ5R4GS78FK58PHF6
+            cost: 123791993
+            path: "contracts\\subscription-engine.clar"
+            anchor-block-only: true
+            clarity-version: 3
+      epoch: "3.2"

@@ -1,10 +1,9 @@
 [project]
 name = 'substack-protocol'
-description = ''
+description = 'Trustless recurring payments on Stacks'
 authors = []
-telemetry = true
+telemetry = false
 cache_dir = '.\.cache'
-requirements = []
 
 [contracts.subscription-vault]
 path = 'contracts/subscription-vault.clar'
@@ -30,7 +29,3 @@ strict = false
 trusted_sender = false
 trusted_caller = false
 callee_filter = false
-
-[repl.remote_data]
-enabled = false
-api_url = 'https://api.hiro.so'
